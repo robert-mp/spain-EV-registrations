@@ -4,6 +4,15 @@ data/
 *.csv
 *.zip
 
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+
+
 # Python
 __pycache__/
 *.py[cod]
