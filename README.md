@@ -1,89 +1,94 @@
-# EV Registrations Analysis
+# EV Registration Data Processor
 
-This project processes and analyzes electric vehicle (EV) registration data from government registration files, extracting information about brands, models, and registration dates. It then generates visualizations to explore trends in the data.
+A streamlined application for processing electric vehicle (EV) registration data following Elon Musk's first principles approach.
+
+## First Principles Approach
+
+This project is built around three core principles:
+
+1. **Core Problem Focus**: Accurate identification of true battery electric vehicles (BEVs) in registration data while filtering out hybrids and other non-BEVs.
+2. **Pattern Matching**: Using reliable regex patterns to identify BEVs with minimal false positives.
+3. **Efficiency**: Single-pass processing of data files with optimized code organization.
 
 ## Project Structure
 
+The project is organized as follows:
+
 ```
 EV_Registrations/
-├── data/                  # Raw registration data files
-│   └── export_mat_*.txt   # Raw fixed-width data files by date
-├── plots/                 # Generated visualization output
-├── output/                # Additional output files
-├── src/                   # Source code
-│   ├── main.py            # Main entry point
-│   ├── process_ev.py      # Data processing script
-│   ├── visualize_ev.py    # Visualization script
-│   └── ...                # Other utility scripts
-├── ev_data_YYYY_MM.csv    # Processed data files (generated)
-└── requirements.txt       # Python dependencies
+├── data/                 # Raw registration data files
+├── report/               # Processed CSV output files
+├── plots/                # Visualizations organized by year/month
+│   └── YYYY/             # Year directory (e.g., 2025)
+│       └── MM/           # Month directory (e.g., 02 for February)
+│           ├── brand_distribution_pie.png
+│           ├── top_models.png
+│           ├── daily_registrations.png
+│           └── brand_trends.png
+└── src/                  # Source code
+    ├── ev_processor.py   # Core processing logic (class-based)
+    ├── main.py           # Entry point for the application
+    └── migrate_data.py   # Utility to migrate existing CSV files
 ```
 
-## Installation
+## Key Features
 
-1. Ensure you have Python 3.8+ installed
-2. Install dependencies: `pip install -r requirements.txt`
+- **Accurate EV Detection**: Reliable identification of battery electric vehicles using specific patterns
+- **Hybrid Filtering**: Excludes hybrid vehicles that are often misidentified as EVs
+- **Organized Output**: Data saved to report directory and visualizations organized by year/month
+- **Comprehensive Visualization**: Multiple chart types to analyze the EV market
 
 ## Usage
 
-### Processing Data
-
-To process the registration data for a specific month:
+### Basic Usage
 
 ```bash
-python src/main.py --year 2025 --month 2 --data-dir data
+python src/main.py
+```
+
+This will process the default month (February 2025) and generate visualizations.
+
+### Command-line Options
+
+```bash
+python src/main.py --year 2025 --month 2 --force --visualize
 ```
 
 Options:
 - `--year`: Year to process (default: 2025)
 - `--month`: Month to process (default: 2)
-- `--data-dir`: Directory containing the raw data files (default: data)
-- `--force`: Force reprocessing even if output file exists
-- `--visualize`: Generate visualizations after processing
+- `--data-dir`: Directory containing raw data files (default: "data")
+- `--report-dir`: Directory for saving processed data (default: "report")
+- `--force`: Force reprocessing existing data
+- `--visualize`: Generate visualizations (saved to plots/YYYY/MM/)
 
-### Generating Visualizations
+## Visualizations
 
-To generate visualizations from processed data:
+The application generates the following visualizations:
 
-```bash
-python src/visualize_ev.py
-```
-
-This will create the following visualizations in the `plots/` directory:
-1. `brand_distribution_pie.png` - Pie chart showing market share by brand
-2. `daily_registrations.png` - Line chart of daily EV registrations
-3. `top_models.png` - Bar chart of top 15 EV models
-4. `top_brands.png` - Bar chart of top 15 EV brands
-5. `brand_trends.png` - Stacked area chart showing brand trends over time
-
-## Data Format
-
-The raw data files (`export_mat_YYYYMMDD.txt`) are fixed-width format files containing vehicle registration information. The script extracts the following fields:
-
-- Make (MARCA): The vehicle manufacturer
-- Model (MODELO): The vehicle model
-- VIN: Vehicle Identification Number
-- Fuel Type (COMBUSTIBLE): Identifies electric vehicles (containing "BEV")
-- Registration Date: Date of registration (extracted from filename)
+1. **Brand Distribution Pie Chart**: Market share of EV brands
+2. **Top Models Bar Chart**: Most popular EV models
+3. **Daily Registrations Line Chart**: Registration trends over time
+4. **Brand Trends Stacked Area Chart**: Brand performance over time
 
 ## Data Processing
 
-The data processing performs the following steps:
-1. Reads fixed-width files with proper character encoding
-2. Identifies electric vehicles based on fuel type patterns
-3. Extracts vehicle make, model, and other information
-4. Deduplicates entries using VIN or make+model+date combination
-5. Saves processed data to CSV files
+The data processing follows these steps:
 
-## Troubleshooting
+1. **Read Registration Files**: Parse fixed-width registration data files
+2. **Identify EVs**: Use regex patterns to identify true BEVs and filter out hybrids
+3. **Extract Vehicle Info**: Extract make, model, VIN, and other details
+4. **Deduplicate**: Remove duplicate entries based on VIN and registration date
+5. **Save Data**: Store processed data in CSV format in the report directory
+6. **Generate Visualizations**: Create charts and save them to year/month folders
 
-If you encounter issues with data processing:
+## Requirements
 
-1. Check that raw data files exist in the `data/` directory
-2. Ensure files follow the expected naming pattern: `export_mat_YYYYMMDD.txt`
-3. Check logs for specific error messages
-4. Try running with the `--force` flag to regenerate output files
+- Python 3.6+
+- pandas
+- matplotlib
+- pathlib
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+MIT 
