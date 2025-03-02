@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 import csv
 
-# Path to the data file (update this to your actual file location)
+# Specify the path to your data file
 file_path = 'data/export_mat_20250228.txt'
 
 # Dictionary to store counts of EVs by make and model
@@ -15,31 +15,31 @@ with open(file_path, 'r', encoding='ISO-8859-1') as file:
         if not line.strip() or 'Vehículos matriculados' in line:
             continue
         
-        # Check if the line starts with an 8-digit date (e.g., '28022025')
-        if len(line) >= 8 and line[0:8].isdigit():
+        # Check if this is a vehicle data line (they typically start with a date)
+        if len(line) >= 9 and line[0:8].isdigit():
             # Extract make and model using fixed positions
-            make = line[8:38].strip()  # Positions 8 to 38 for make
-            model = line[38:68].strip()  # Positions 38 to 68 for model
+            make = line[8:38].strip()
+            model = line[38:68].strip()
             
-            # Check if 'BEV' is in the line to identify electric vehicles
-            if 'BEV' in line:
-                # Remove leading '0' or '6' followed by a space from make, if present
+            # Look for the BEV pattern in the drivetrain field
+            # The pattern is typically a number followed by '1000BEV' and more digits
+            if re.search(r'\d+1000BEV\s+\d+', line):
+                # Remove any leading "0" or "6" that might appear in the make field
                 make = re.sub(r'^[06]\s+', '', make)
-                # Increment the count for this make-model pair
                 ev_counts[(make, model)] += 1
 
 # Sort the results alphabetically by make and model
 sorted_ev_counts = sorted(ev_counts.items())
 
-# Print the table header with aligned columns
+# Print the table header
 print("\nElectric Vehicle Registrations:")
 print("-" * 50)
-print(f"{'Make':<20} {'Model':<20} {'Count':<5}")
+print(f"{'Make':<30} {'Model':<30} {'Count':<5}")
 print("-" * 50)
 
-# Print each row of the table with aligned columns
+# Print each row of the table
 for (make, model), count in sorted_ev_counts:
-    print(f"{make:<20} {model:<20} {count:<5}")
+    print(f"{make:<30} {model:<30} {count:<5}")
 
 # Save the results to a CSV file
 with open('ev_sales_by_model.csv', 'w', newline='', encoding='utf-8') as csvfile:
